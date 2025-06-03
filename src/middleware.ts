@@ -1,27 +1,30 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { createServerClient } from "@supabase/ssr";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export async function middleware(request: NextRequest) {
   // Initialize the Supabase middleware client
   const res = NextResponse.next();
-  
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get: (name) => request.cookies.get(name)?.value,
-        set: (name, value, options) => {
-          res.cookies.set({ name, value, ...options });
-        },
-        remove: (name, options) => {
-          res.cookies.set({ name, value: '', ...options });
-        },
+
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error("Missing Supabase environment variables");
+  }
+
+  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+    cookies: {
+      get: (name) => request.cookies.get(name)?.value,
+      set: (name, value, options) => {
+        res.cookies.set({ name, value, ...options });
       },
-    }
-  );
-  
+      remove: (name, options) => {
+        res.cookies.set({ name, value: "", ...options });
+      },
+    },
+  });
+
   // Check if we have a session
   const {
     data: { session },
@@ -35,8 +38,8 @@ export async function middleware(request: NextRequest) {
   ];
 
   // Check if the path is a protected route
-  const isProtectedRoute = protectedRoutes.some((route) => 
-    request.nextUrl.pathname.startsWith(route)
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route),
   );
 
   // If accessing a protected route without a session, redirect to login
@@ -44,7 +47,7 @@ export async function middleware(request: NextRequest) {
     // You can create a login page and redirect there
     // const redirectUrl = new URL('/login', request.url);
     // return NextResponse.redirect(redirectUrl);
-    
+
     // For now, we'll just proceed as normal since we don't have a dedicated login page
     return res;
   }
@@ -62,6 +65,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - public files (public directory)
      */
-    '/((?!_next/static|_next/image|favicon.ico|site.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    "/((?!_next/static|_next/image|favicon.ico|site.webmanifest|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

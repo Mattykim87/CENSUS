@@ -4,6 +4,7 @@ import { tasks } from "@/db/schema";
 import type * as React from "react";
 import type { FieldPath, FieldValues, UseFormReturn } from "react-hook-form";
 
+import { Icons } from "@/components/icons";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -15,7 +16,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -26,7 +31,6 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
-import { Icons } from "@/components/icons";
 import { format } from "date-fns";
 
 interface TaskFormProps<T extends FieldValues>
@@ -206,7 +210,7 @@ export function TaskForm<T extends FieldValues>({
                       variant={"outline"}
                       className={cn(
                         "w-full pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
+                        !field.value && "text-muted-foreground",
                       )}
                     >
                       {field.value ? (

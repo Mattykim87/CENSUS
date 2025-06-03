@@ -26,8 +26,8 @@ export function generateRandomTask(): Task {
     status: faker.helpers.shuffle(tasks.status.enumValues)[0] ?? "todo",
     label: faker.helpers.shuffle(tasks.label.enumValues)[0] ?? "bug",
     priority: faker.helpers.shuffle(tasks.priority.enumValues)[0] ?? "low",
-    dueDate: faker.datatype.boolean({ probability: 0.3 }) 
-      ? faker.date.future() 
+    dueDate: faker.datatype.boolean({ probability: 0.3 })
+      ? faker.date.future()
       : null,
     archived: faker.datatype.boolean({ probability: 0.2 }),
     createdAt: new Date(),

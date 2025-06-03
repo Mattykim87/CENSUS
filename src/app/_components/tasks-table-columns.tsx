@@ -106,7 +106,10 @@ export function getTasksTableColumns({
           <div className="flex items-center gap-2">
             {label && <Badge variant="outline">{label}</Badge>}
             {isCSVFile && (
-              <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+              <Badge
+                variant="outline"
+                className="border-blue-200 bg-blue-50 text-blue-700"
+              >
                 <FileSpreadsheet className="mr-1 h-3 w-3" />
                 CSV
               </Badge>
@@ -134,16 +137,22 @@ export function getTasksTableColumns({
       cell: ({ row }) => {
         const isCSVFile = row.original.isCSVFile;
         const status = row.original.csvUploadStatus;
-        
+
         if (!isCSVFile || !status) return null;
 
         return (
-          <Badge variant="outline" className={`py-1 ${
-            status === 'completed' ? 'bg-green-50 text-green-700 border-green-200' :
-            status === 'processing' ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
-            status === 'failed' ? 'bg-red-50 text-red-700 border-red-200' :
-            'bg-gray-50 text-gray-700 border-gray-200'
-          }`}>
+          <Badge
+            variant="outline"
+            className={`py-1 ${
+              status === "completed"
+                ? "border-green-200 bg-green-50 text-green-700"
+                : status === "processing"
+                  ? "border-yellow-200 bg-yellow-50 text-yellow-700"
+                  : status === "failed"
+                    ? "border-red-200 bg-red-50 text-red-700"
+                    : "border-gray-200 bg-gray-50 text-gray-700"
+            }`}
+          >
             <Database className="mr-1 h-3 w-3" />
             <span className="capitalize">{status}</span>
           </Badge>
@@ -152,12 +161,14 @@ export function getTasksTableColumns({
       meta: {
         label: "CSV Status",
         variant: "multiSelect",
-        options: ["pending", "processing", "completed", "failed"].map((status) => ({
-          label: status.charAt(0).toUpperCase() + status.slice(1),
-          value: status,
-          count: 0, // We don't have counts for these
-          icon: Database,
-        })),
+        options: ["pending", "processing", "completed", "failed"].map(
+          (status) => ({
+            label: status.charAt(0).toUpperCase() + status.slice(1),
+            value: status,
+            count: 0, // We don't have counts for these
+            icon: Database,
+          }),
+        ),
       },
       enableColumnFilter: true,
       enableHiding: true,

@@ -133,9 +133,7 @@
         "tasks_code_unique": {
           "name": "tasks_code_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "code"
-          ]
+          "columns": ["code"]
         }
       }
     },
@@ -207,12 +205,8 @@
           "name": "csv_uploads_task_id_tasks_id_fk",
           "tableFrom": "csv_uploads",
           "tableTo": "tasks",
-          "columnsFrom": [
-            "task_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["task_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }

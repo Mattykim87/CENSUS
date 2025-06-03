@@ -1,7 +1,7 @@
 import { env } from "@/env.js";
+import { supabase } from "@/lib/supabase";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { supabase } from "@/lib/supabase";
 
 import * as schema from "./schema";
 

@@ -38,7 +38,7 @@ export async function uploadFile(
   bucket: string,
   path: string,
   file: File,
-  options?: { upsert?: boolean }
+  options?: { upsert?: boolean },
 ) {
   const { data, error } = await supabase.storage
     .from(bucket)
@@ -65,15 +65,18 @@ export async function deleteFile(bucket: string, path: string) {
  * Supabase Realtime Utilities
  */
 
-export function subscribeToChannel(channelName: string, callback: (payload: any) => void) {
+export function subscribeToChannel(
+  channelName: string,
+  callback: (payload: unknown) => void,
+) {
   const channel = supabase.channel(channelName);
-  
+
   channel
-    .on('broadcast', { event: 'all' }, (payload) => {
+    .on("broadcast", { event: "all" }, (payload) => {
       callback(payload);
     })
     .subscribe();
-    
+
   return () => {
     supabase.removeChannel(channel);
   };

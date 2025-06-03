@@ -1,4 +1,4 @@
-import { type Task, tasks, csvUploads } from "@/db/schema";
+import { type Task, csvUploads, tasks } from "@/db/schema";
 import {
   createSearchParamsCache,
   parseAsArrayOf,
@@ -30,7 +30,9 @@ export const searchParamsCache = createSearchParamsCache({
   joinOperator: parseAsStringEnum(["and", "or"]).withDefault("and"),
   // CSV filters
   isCSVFile: parseAsString.withDefault(""),
-  csvUploadStatus: parseAsArrayOf(z.enum(["pending", "processing", "completed", "failed"])).withDefault([]),
+  csvUploadStatus: parseAsArrayOf(
+    z.enum(["pending", "processing", "completed", "failed"]),
+  ).withDefault([]),
 });
 
 export const createTaskSchema = z.object({
@@ -61,9 +63,13 @@ export type UpdateTaskSchema = z.infer<typeof updateTaskSchema>;
 
 // CSV upload schema
 export const csvUploadSchema = z.object({
-  file: z.instanceof(File, { message: "File is required" })
-    .refine(file => file.size > 0, "File cannot be empty")
-    .refine(file => file.type === "text/csv" || file.name.endsWith(".csv"), "File must be a CSV"),
+  file: z
+    .instanceof(File, { message: "File is required" })
+    .refine((file) => file.size > 0, "File cannot be empty")
+    .refine(
+      (file) => file.type === "text/csv" || file.name.endsWith(".csv"),
+      "File must be a CSV",
+    ),
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
 });
@@ -72,9 +78,13 @@ export type CSVUploadSchema = z.infer<typeof csvUploadSchema>;
 
 // CSV preview schema
 export const csvPreviewSchema = z.object({
-  file: z.instanceof(File, { message: "File is required" })
-    .refine(file => file.size > 0, "File cannot be empty")
-    .refine(file => file.type === "text/csv" || file.name.endsWith(".csv"), "File must be a CSV"),
+  file: z
+    .instanceof(File, { message: "File is required" })
+    .refine((file) => file.size > 0, "File cannot be empty")
+    .refine(
+      (file) => file.type === "text/csv" || file.name.endsWith(".csv"),
+      "File must be a CSV",
+    ),
 });
 
 export type CSVPreviewSchema = z.infer<typeof csvPreviewSchema>;

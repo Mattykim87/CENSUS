@@ -1,6 +1,13 @@
 import { pgTable } from "@/db/utils";
 import { sql } from "drizzle-orm";
-import { boolean, jsonb, real, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  jsonb,
+  real,
+  text,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
 
 import { generateId } from "@/lib/id";
 
