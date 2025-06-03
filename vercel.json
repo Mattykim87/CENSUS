@@ -6,9 +6,6 @@
     "NEXT_PUBLIC_SUPABASE_URL": "https://wutrykwsqftiweqwhhtd.supabase.co",
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1dHJ5a3dzcWZ0aXdlcXdoaHRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5NzE3NDYsImV4cCI6MjA2NDU0Nzc0Nn0.W_diRJq1ZRY1raysfEN1iephXKMSJsbu0SioYCsNnIY"
   },
-  "buildEnvironment": {
-    "SKIP_ENV_VALIDATION": "1"
-  },
   "ignoreCommand": "node -e \"process.exit(0)\"",
   "installCommand": "npm install --legacy-peer-deps"
 }
