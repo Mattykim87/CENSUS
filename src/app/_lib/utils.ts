@@ -21,13 +21,24 @@ export function generateRandomTask(): Task {
     title: faker.hacker
       .phrase()
       .replace(/^./, (letter) => letter.toUpperCase()),
+    description: faker.lorem.sentence(),
     estimatedHours: faker.number.int({ min: 1, max: 24 }),
     status: faker.helpers.shuffle(tasks.status.enumValues)[0] ?? "todo",
     label: faker.helpers.shuffle(tasks.label.enumValues)[0] ?? "bug",
     priority: faker.helpers.shuffle(tasks.priority.enumValues)[0] ?? "low",
+    dueDate: faker.datatype.boolean({ probability: 0.3 }) 
+      ? faker.date.future() 
+      : null,
     archived: faker.datatype.boolean({ probability: 0.2 }),
     createdAt: new Date(),
     updatedAt: new Date(),
+    // CSV-related fields with default values
+    isCSVFile: false,
+    csvFilename: null,
+    csvHeaders: null,
+    csvRowCount: null,
+    csvUploadStatus: null,
+    csvUploadError: null,
   };
 }
 
