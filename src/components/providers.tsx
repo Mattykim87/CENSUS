@@ -6,8 +6,8 @@ import {
 } from "next-themes";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/components/auth/auth-provider";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (

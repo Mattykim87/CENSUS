@@ -1,13 +1,13 @@
 "use server";
 
 import { db } from "@/db/index";
-import { type Task, tasks, csvUploads } from "@/db/schema";
+import { type Task, csvUploads, tasks } from "@/db/schema";
 import { takeFirstOrThrow } from "@/db/utils";
 import { asc, eq, inArray, not } from "drizzle-orm";
 import { customAlphabet } from "nanoid";
 import { revalidateTag, unstable_noStore } from "next/cache";
 
-import { convertTasksToCSV, parseCSV, csvToTaskData } from "@/lib/csv";
+import { convertTasksToCSV, csvToTaskData, parseCSV } from "@/lib/csv";
 import { getErrorMessage } from "@/lib/handle-error";
 
 import { generateRandomTask } from "./utils";
@@ -265,9 +265,9 @@ export async function uploadCSV(input: {
 
       // Convert CSV data to tasks
       const taskData = csvToTaskData(csvData);
-      
+
       // Only insert up to 50 items to avoid overloading the database
-      const tasksToInsert = taskData.slice(0, 50).map(taskItem => ({
+      const tasksToInsert = taskData.slice(0, 50).map((taskItem) => ({
         code: `CSVITEM-${customAlphabet("0123456789", 4)()}`,
         title: taskItem.title || "CSV Item",
         status: taskItem.status || "todo",
@@ -317,7 +317,7 @@ export async function previewCSV(input: { csvContent: string }) {
   unstable_noStore();
   try {
     const csvData = parseCSV(input.csvContent);
-    
+
     // Only return up to 10 rows for preview
     const previewData = csvData.slice(0, 10);
     const headers = Object.keys(previewData[0] || {});
@@ -345,15 +345,15 @@ export async function exportTasksAsCSV(input: { ids?: string[] }) {
   unstable_noStore();
   try {
     let data: Task[] = [];
-    
+
     if (input.ids?.length) {
       data = await db.select().from(tasks).where(inArray(tasks.id, input.ids));
     } else {
       data = await db.select().from(tasks);
     }
-    
+
     const csv = convertTasksToCSV(data);
-    
+
     return {
       data: { csv },
       error: null,
@@ -372,8 +372,11 @@ export async function exportTasksAsCSV(input: { ids?: string[] }) {
 export async function getCSVUploads() {
   unstable_noStore();
   try {
-    const data = await db.select().from(csvUploads).orderBy(asc(csvUploads.createdAt));
-    
+    const data = await db
+      .select()
+      .from(csvUploads)
+      .orderBy(asc(csvUploads.createdAt));
+
     return {
       data,
       error: null,
@@ -396,12 +399,12 @@ export async function retryCSVUpload(input: { id: string }) {
       .select()
       .from(csvUploads)
       .where(eq(csvUploads.id, input.id))
-      .then(uploads => uploads[0]);
-    
+      .then((uploads) => uploads[0]);
+
     if (!upload) {
       throw new Error("CSV upload not found");
     }
-    
+
     // Update the status to 'processing'
     await db
       .update(csvUploads)
@@ -410,7 +413,7 @@ export async function retryCSVUpload(input: { id: string }) {
         updatedAt: new Date(),
       })
       .where(eq(csvUploads.id, input.id));
-    
+
     // Here you would typically re-process the CSV
     // For this example, we'll just mark it as completed
     await db
@@ -421,9 +424,9 @@ export async function retryCSVUpload(input: { id: string }) {
         updatedAt: new Date(),
       })
       .where(eq(csvUploads.id, input.id));
-    
+
     revalidateTag("csv-uploads");
-    
+
     return {
       data: { success: true },
       error: null,

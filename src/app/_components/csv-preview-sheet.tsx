@@ -23,10 +23,17 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { getErrorMessage } from "@/lib/handle-error";
-import { csvPreviewSchema, type CSVPreviewSchema } from "../_lib/validations";
 import { previewCSV } from "../_lib/actions";
+import { type CSVPreviewSchema, csvPreviewSchema } from "../_lib/validations";
 
 interface CSVPreviewSheetProps {
   onConfirm: (file: File, headers: string[], rowCount: number) => void;
@@ -51,22 +58,22 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
     const file = e.target.files?.[0];
     if (file) {
       form.setValue("file", file);
-      
+
       // Read the file and preview it
       const reader = new FileReader();
       reader.onload = async (event) => {
         if (event.target?.result) {
           const csvContent = event.target.result as string;
-          
+
           startTransition(async () => {
             try {
               const result = await previewCSV({ csvContent });
-              
+
               if (result.error) {
                 toast.error(result.error);
                 return;
               }
-              
+
               if (result.data) {
                 setPreviewData(result.data);
               }
@@ -128,10 +135,10 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
 
           {previewData && (
             <div className="mt-6">
-              <div className="text-sm text-muted-foreground mb-2">
+              <div className="mb-2 text-muted-foreground text-sm">
                 Total rows: {previewData.totalRows} (showing first 10)
               </div>
-              <div className="border rounded-md overflow-auto max-h-[400px]">
+              <div className="max-h-[400px] overflow-auto rounded-md border">
                 <Table>
                   <TableHeader>
                     <TableRow>

@@ -29,10 +29,14 @@ export function TasksTableToolbarActions({
         />
       ) : null}
       <CreateTaskSheet />
-      <CSVExportButton 
-        ids={table.getFilteredSelectedRowModel().rows.length > 0 
-          ? table.getFilteredSelectedRowModel().rows.map(row => row.original.id) 
-          : undefined}
+      <CSVExportButton
+        ids={
+          table.getFilteredSelectedRowModel().rows.length > 0
+            ? table
+                .getFilteredSelectedRowModel()
+                .rows.map((row) => row.original.id)
+            : undefined
+        }
       />
       <CSVUploadSheet>
         <Button variant="outline" size="sm">

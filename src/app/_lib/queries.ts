@@ -48,8 +48,8 @@ export async function getTasks(input: GetTasksSchema) {
               input.isCSVFile === "true"
                 ? sql`${tasks.isCSVFile} = true`
                 : input.isCSVFile === "false"
-                ? sql`${tasks.isCSVFile} = false`
-                : undefined,
+                  ? sql`${tasks.isCSVFile} = false`
+                  : undefined,
               input.csvUploadStatus.length > 0
                 ? inArray(tasks.csvUploadStatus, input.csvUploadStatus)
                 : undefined,
