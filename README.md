@@ -1,8 +1,8 @@
-# [Shadcn Table]
+# [CENSUS]
 
 This is a shadcn table component with server-side sorting, filtering, and pagination. It is bootstrapped with `create-t3-app`.
 
-[![Shadcn Table](./public/images/screenshot.png)](https://tablecn.com)
+[![CENSUS](./public/images/screenshot.png)](https://github.com/Mattykim87/CENSUS)
 
 ## Documentation
 
@@ -33,7 +33,7 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
 1. Clone the repository
 
    ```bash
-   git clone https://github.com/sadmann7/shadcn-table
+   git clone https://github.com/Mattykim87/CENSUS
    ```
 
 2. Install dependencies using pnpm
@@ -79,4 +79,3 @@ Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/ver
 ## Credits
 
 - [shadcn/ui](https://github.com/shadcn-ui/ui/tree/main/apps/www/app/(app)/examples/tasks) - For the initial implementation of the data table.
-# CENSUS
