@@ -14,8 +14,9 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
 - **Styling:** [Tailwind CSS](https://tailwindcss.com)
 - **UI Components:** [shadcn/ui](https://ui.shadcn.com)
 - **Table package:** [TanStack/react-table](https://tanstack.com/table/latest)
-- **Database:** [Neon](https://neon.tech)
+- **Primary Database:** [Supabase PostgreSQL](https://supabase.com)
 - **ORM:** [Drizzle ORM](https://orm.drizzle.team)
+- **Authentication:** [Supabase Auth](https://supabase.com/auth)
 - **Validation:** [Zod](https://zod.dev)
 
 ## Features
@@ -27,6 +28,8 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
 - [x] `Notion/Airtable` like advanced filtering
 - [x] `Linear` like filter menu for command palette filtering
 - [x] Action bar on row selection
+- [x] Supabase authentication integration
+- [x] Secure database access via Supabase
 
 ## Running Locally
 
@@ -48,11 +51,20 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
    cp .env.example .env
    ```
 
-4. (Optional) Run database using docker-compose.yml file
+   > **Note:** Set up your Supabase project and add your Supabase credentials to the `.env` file. See [Supabase Setup](./docs/supabase-setup.md) for detailed instructions.
 
+4. Database setup options:
+   
+   **Primary Option: Supabase (recommended)**
+   - Create a Supabase project (our primary database provider)
+   - Add your Supabase credentials to .env
+   - See [Supabase Setup](./docs/supabase-setup.md) for detailed instructions
+   
+   **Alternative Option: Docker (for local development only)**
    ```bash
    docker compose up
    ```
+   > **Note:** Docker setup lacks Supabase Auth and other Supabase-specific features. Use only for basic local development.
 
 5. Push the database schema
 
@@ -74,7 +86,19 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
 
 ## How do I deploy this?
 
-Follow the deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+### Vercel Deployment
+
+1. Push your code to GitHub
+2. Import your project into Vercel
+3. Add the required environment variables:
+   - `DATABASE_URL` (Supabase PostgreSQL connection string)
+   - `NEXT_PUBLIC_SUPABASE_URL` (Supabase project URL)
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` (Supabase anon key)
+4. Deploy!
+
+See the [deployment guides](https://create.t3.gg/en/deployment/vercel) and [Supabase Setup](./docs/supabase-setup.md) for more detailed instructions.
+
+Alternate deployment options: [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker).
 
 ## Credits
 

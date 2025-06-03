@@ -27,6 +27,14 @@ Install the project dependencies:
 pnpm install
 ```
 
+### Set up the database
+
+The project uses Supabase as its primary database provider. You have two options:
+
+1. **Recommended: Use Supabase** - Create a Supabase project and configure your `.env` file with your Supabase credentials. See the [Supabase Setup](./docs/supabase-setup.md) documentation for details.
+
+2. **Alternative for basic development:** Use Docker - If you're only making UI changes or don't need Supabase Auth, you can use the Docker configuration included in the project. Run `docker compose up` to start a local PostgreSQL database.
+
 ### Create a branch
 
 Create and check out your feature branch:

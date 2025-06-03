@@ -1,3 +1,6 @@
+# Alternative local development setup for when Supabase (our primary database) is not required
+# Use this only for basic development without Supabase Auth and other Supabase-specific features
+
 services:
   shadcn-table:
     image: postgres:17.4

@@ -7,12 +7,15 @@ import {
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/components/auth/auth-provider";
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
     <NextThemesProvider {...props}>
       <TooltipProvider delayDuration={120}>
-        <NuqsAdapter>{children}</NuqsAdapter>
+        <AuthProvider>
+          <NuqsAdapter>{children}</NuqsAdapter>
+        </AuthProvider>
       </TooltipProvider>
     </NextThemesProvider>
   );
