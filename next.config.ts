@@ -15,7 +15,19 @@ const nextConfig: NextConfig = {
   // Already doing linting and typechecking as separate tasks in CI
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
-  // Allow deployment with missing environment variables (rely on runtime config)
+  
+  // Environment variables configuration for build-time availability
+  env: {
+    // Ensure Supabase environment variables are available during build
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+  },
+  
+  // Experimental features for better build stability
+  experimental: {
+    // Improve build performance and stability
+    optimizePackageImports: ["@supabase/supabase-js", "@supabase/ssr"],
+  },
 };
 
 export default nextConfig;

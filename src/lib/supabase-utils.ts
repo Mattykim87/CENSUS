@@ -1,10 +1,11 @@
-import { supabase } from "./supabase";
+import { getSupabase } from "./supabase";
 
 /**
  * Supabase Auth Utilities
  */
 
 export async function signInWithEmail(email: string, password: string) {
+  const supabase = getSupabase();
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -13,6 +14,7 @@ export async function signInWithEmail(email: string, password: string) {
 }
 
 export async function signUpWithEmail(email: string, password: string) {
+  const supabase = getSupabase();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
@@ -21,11 +23,13 @@ export async function signUpWithEmail(email: string, password: string) {
 }
 
 export async function signOut() {
+  const supabase = getSupabase();
   const { error } = await supabase.auth.signOut();
   return { error };
 }
 
 export async function getSession() {
+  const supabase = getSupabase();
   const { data, error } = await supabase.auth.getSession();
   return { session: data.session, error };
 }
@@ -40,6 +44,7 @@ export async function uploadFile(
   file: File,
   options?: { upsert?: boolean },
 ) {
+  const supabase = getSupabase();
   const { data, error } = await supabase.storage
     .from(bucket)
     .upload(path, file, options);
@@ -47,16 +52,19 @@ export async function uploadFile(
 }
 
 export async function downloadFile(bucket: string, path: string) {
+  const supabase = getSupabase();
   const { data, error } = await supabase.storage.from(bucket).download(path);
   return { data, error };
 }
 
 export async function listFiles(bucket: string, path: string) {
+  const supabase = getSupabase();
   const { data, error } = await supabase.storage.from(bucket).list(path);
   return { data, error };
 }
 
 export async function deleteFile(bucket: string, path: string) {
+  const supabase = getSupabase();
   const { data, error } = await supabase.storage.from(bucket).remove([path]);
   return { data, error };
 }
@@ -69,10 +77,11 @@ export function subscribeToChannel(
   channelName: string,
   callback: (payload: unknown) => void,
 ) {
+  const supabase = getSupabase();
   const channel = supabase.channel(channelName);
 
   channel
-    .on("broadcast", { event: "all" }, (payload) => {
+    .on("broadcast", { event: "all" }, (payload: unknown) => {
       callback(payload);
     })
     .subscribe();
