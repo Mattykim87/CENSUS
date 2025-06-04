@@ -39,7 +39,9 @@ export function CSVUploadSheet({ children }: CSVUploadSheetProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadStatus, setUploadStatus] = useState<"idle" | "uploading" | "processing" | "success" | "error">("idle");
+  const [uploadStatus, setUploadStatus] = useState<
+    "idle" | "uploading" | "processing" | "success" | "error"
+  >("idle");
 
   const form = useForm<CSVUploadSchema>({
     resolver: zodResolver(csvUploadSchema),
