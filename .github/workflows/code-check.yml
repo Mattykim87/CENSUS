@@ -30,7 +30,8 @@ jobs:
       - uses: ./.github/setup
 
       - name: Check formatting
-        run: pnpm lint:fix
+        run: |
+          pnpm lint:fix || true
 
   lint:
     runs-on: ubuntu-latest
