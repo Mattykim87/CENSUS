@@ -12,7 +12,6 @@ import { DataTableFilterList } from "@/components/data-table/data-table-filter-l
 import { DataTableFilterMenu } from "@/components/data-table/data-table-filter-menu";
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
-import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions";
 import type {
   getEstimatedHoursRange,
   getTaskPriorityCounts,
@@ -23,6 +22,7 @@ import { DeleteTasksDialog } from "./delete-tasks-dialog";
 import { useFeatureFlags } from "./feature-flags-provider";
 import { TasksTableActionBar } from "./tasks-table-action-bar";
 import { getTasksTableColumns } from "./tasks-table-columns";
+import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions";
 import { UpdateTaskSheet } from "./update-task-sheet";
 
 interface TasksTableProps {

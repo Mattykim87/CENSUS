@@ -155,11 +155,11 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
               name="file"
               render={({ field: { onChange, value, ...rest } }) => (
                 <FormItem>
-                  <FormLabel>CSV File</FormLabel>
-                  <div
-                    className={`border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center transition-colors ${
-                      isDragging ? "border-primary bg-primary/5" : "border-muted-foreground/25"
-                    }`}
+                    <FormLabel>CSV File</FormLabel>
+                    <div
+                      className={`flex flex-col items-center justify-center rounded-md border-2 border-dashed p-6 transition-colors ${
+                        isDragging ? "border-primary bg-primary/5" : "border-muted-foreground/25"
+                      }`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
@@ -167,7 +167,7 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
                     <div className="flex flex-col items-center text-center">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className="h-10 w-10 text-muted-foreground mb-2"
+                        className="mb-2 h-10 w-10 text-muted-foreground"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -181,9 +181,9 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
                       </svg>
                       <p className="mb-1 font-medium">
                         Drag and drop your CSV file here, or{" "}
-                        <span className="text-primary cursor-pointer">browse</span>
+                        <span className="cursor-pointer text-primary">browse</span>
                       </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-muted-foreground text-xs">
                         Supports CSV files up to 10MB
                       </p>
                     </div>

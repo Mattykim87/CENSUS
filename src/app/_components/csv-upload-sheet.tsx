@@ -1,10 +1,10 @@
 "use client";
 
+import { Progress } from "@/components/ui/progress";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Progress } from "@/components/ui/progress";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -96,7 +96,7 @@ export function CSVUploadSheet({ children }: CSVUploadSheetProps) {
             setUploadProgress(100);
             setUploadStatus("success");
             toast.success("CSV file uploaded successfully");
-            
+
             // Reset form after a brief delay to show 100% completion
             setTimeout(() => {
               setIsOpen(false);
@@ -194,11 +194,14 @@ export function CSVUploadSheet({ children }: CSVUploadSheetProps) {
                 )}
               />
 
-              {(uploadStatus === "uploading" || uploadStatus === "processing") && (
-                <div className="space-y-2 my-4">
+              {(uploadStatus === "uploading" ||
+                uploadStatus === "processing") && (
+                <div className="my-4 space-y-2">
                   <Progress value={uploadProgress} className="w-full" />
-                  <p className="text-sm text-muted-foreground">
-                    {uploadStatus === "uploading" ? "Uploading file..." : "Processing CSV data..."}
+                  <p className="text-muted-foreground text-sm">
+                    {uploadStatus === "uploading"
+                      ? "Uploading file..."
+                      : "Processing CSV data..."}
                     {uploadProgress > 0 && ` (${Math.round(uploadProgress)}%)`}
                   </p>
                 </div>
@@ -215,17 +218,29 @@ export function CSVUploadSheet({ children }: CSVUploadSheetProps) {
                     setUploadProgress(0);
                     setUploadStatus("idle");
                   }}
-                  disabled={isPending || uploadStatus === "uploading" || uploadStatus === "processing"}
+                  disabled={
+                    isPending ||
+                    uploadStatus === "uploading" ||
+                    uploadStatus === "processing"
+                  }
                 >
                   Cancel
                 </Button>
-                <Button 
-                  type="submit" 
-                  disabled={isPending || !selectedFile || uploadStatus === "uploading" || uploadStatus === "processing"}
+                <Button
+                  type="submit"
+                  disabled={
+                    isPending ||
+                    !selectedFile ||
+                    uploadStatus === "uploading" ||
+                    uploadStatus === "processing"
+                  }
                   className="min-w-[100px]"
                 >
-                  {uploadStatus === "uploading" ? "Uploading..." : 
-                   uploadStatus === "processing" ? "Processing..." : "Upload CSV"}
+                  {uploadStatus === "uploading"
+                    ? "Uploading..."
+                    : uploadStatus === "processing"
+                      ? "Processing..."
+                      : "Upload CSV"}
                 </Button>
               </div>
             </form>

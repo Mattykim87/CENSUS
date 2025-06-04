@@ -75,7 +75,7 @@ export const csvUploadSchema = z.object({
     )
     .refine(
       (file) => file.size <= MAX_FILE_SIZE,
-      `File size must be less than 10MB`,
+      "File size must be less than 10MB",
     ),
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
@@ -94,7 +94,7 @@ export const csvPreviewSchema = z.object({
     )
     .refine(
       (file) => file.size <= MAX_FILE_SIZE,
-      `File size must be less than 10MB`,
+      "File size must be less than 10MB",
     ),
 });
 
