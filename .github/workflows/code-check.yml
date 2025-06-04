@@ -31,11 +31,8 @@ jobs:
 
       - name: Check formatting
         run: |
-          pnpm lint:fix
-          if [ $? -ne 0 ]; then
-            echo "Linting issues detected. Please fix them manually."
-            exit 1
-          fi
+          pnpm lint:fix || echo "Linting issues detected. See below for details:"
+          pnpm lint
 
   lint:
     runs-on: ubuntu-latest
