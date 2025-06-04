@@ -35,9 +35,12 @@ export const env = createEnv({
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
-   * useful for Docker builds.
+   * useful for Docker builds or Vercel deployments where environment variables might be set differently.
+   * 
+   * During build on CI/CD platforms, we might want to automatically skip validation
+   * to prevent issues with /_not-found prerendering.
    */
-  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+  skipValidation: !!process.env.SKIP_ENV_VALIDATION || process.env.NODE_ENV === "production",
   /**
    * Makes it so that empty strings are treated as undefined.
    * `SOME_VAR: z.string()` and `SOME_VAR=''` will throw an error.

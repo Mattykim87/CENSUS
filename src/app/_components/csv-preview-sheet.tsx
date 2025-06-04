@@ -43,6 +43,7 @@ interface CSVPreviewSheetProps {
 export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [previewData, setPreviewData] = useState<{
     headers: string[];
     rows: Record<string, string>[];
@@ -54,47 +55,87 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
     defaultValues: {},
   });
 
+  const processFile = (file: File | undefined) => {
+    if (!file) return;
+    
+    form.setValue("file", file);
+
+    // Read the file and preview it
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      if (event.target?.result) {
+        const csvContent = event.target.result as string;
+
+        startTransition(async () => {
+          try {
+            const result = await previewCSV({ csvContent });
+
+            if (result.error) {
+              toast.error(result.error);
+              return;
+            }
+
+            if (result.data) {
+              setPreviewData(result.data);
+            }
+          } catch (err) {
+            toast.error(getErrorMessage(err));
+          }
+        });
+      }
+    };
+    reader.readAsText(file);
+  };
+
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      form.setValue("file", file);
-
-      // Read the file and preview it
-      const reader = new FileReader();
-      reader.onload = async (event) => {
-        if (event.target?.result) {
-          const csvContent = event.target.result as string;
-
-          startTransition(async () => {
-            try {
-              const result = await previewCSV({ csvContent });
-
-              if (result.error) {
-                toast.error(result.error);
-                return;
-              }
-
-              if (result.data) {
-                setPreviewData(result.data);
-              }
-            } catch (err) {
-              toast.error(getErrorMessage(err));
-            }
-          });
-        }
-      };
-      reader.readAsText(file);
+      processFile(file);
+    }
+  };
+  
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+  
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+  
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      const file = files[0];
+      // Ensure file is defined before accessing its properties
+      if (file && (file.type === "text/csv" || file.name.endsWith(".csv"))) {
+        processFile(file);
+      } else {
+        toast.error("Please drop a CSV file");
+      }
     }
   };
 
   const handleConfirm = () => {
-    const file = form.getValues("file");
-    if (file && previewData) {
-      onConfirm(file, previewData.headers, previewData.totalRows);
-      setIsOpen(false);
-      form.reset();
-      setPreviewData(null);
+    const formFile = form.getValues("file");
+    
+    // Explicit type guard to make TypeScript happy
+    if (!formFile || !previewData) {
+      return;
     }
+    
+    // At this point TypeScript knows formFile is defined and is a File
+    onConfirm(formFile, previewData.headers, previewData.totalRows);
+    setIsOpen(false);
+    form.reset();
+    setPreviewData(null);
   };
 
   return (
@@ -115,7 +156,37 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
               render={({ field: { onChange, value, ...rest } }) => (
                 <FormItem>
                   <FormLabel>CSV File</FormLabel>
-                  <FormControl>
+                  <div
+                    className={`border-2 border-dashed rounded-md p-6 flex flex-col items-center justify-center transition-colors ${
+                      isDragging ? "border-primary bg-primary/5" : "border-muted-foreground/25"
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                  >
+                    <div className="flex flex-col items-center text-center">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-10 w-10 text-muted-foreground mb-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                        />
+                      </svg>
+                      <p className="mb-1 font-medium">
+                        Drag and drop your CSV file here, or{" "}
+                        <span className="text-primary cursor-pointer">browse</span>
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Supports CSV files up to 10MB
+                      </p>
+                    </div>
                     <Input
                       type="file"
                       accept=".csv,text/csv"
@@ -124,9 +195,20 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
                         onFileChange(e);
                       }}
                       disabled={isPending}
+                      className="hidden"
+                      id="csv-file-input"
                       {...rest}
                     />
-                  </FormControl>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="mt-4"
+                      onClick={() => document.getElementById("csv-file-input")?.click()}
+                      disabled={isPending}
+                    >
+                      Select File
+                    </Button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}

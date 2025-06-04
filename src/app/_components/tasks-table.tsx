@@ -12,6 +12,7 @@ import { DataTableFilterList } from "@/components/data-table/data-table-filter-l
 import { DataTableFilterMenu } from "@/components/data-table/data-table-filter-menu";
 import { DataTableSortList } from "@/components/data-table/data-table-sort-list";
 import { DataTableToolbar } from "@/components/data-table/data-table-toolbar";
+import { TasksTableToolbarActions } from "./tasks-table-toolbar-actions";
 import type {
   getEstimatedHoursRange,
   getTaskPriorityCounts,
@@ -81,6 +82,7 @@ export function TasksTable({ promises }: TasksTableProps) {
       >
         {enableAdvancedFilter ? (
           <DataTableAdvancedToolbar table={table}>
+            <TasksTableToolbarActions table={table} />
             <DataTableSortList table={table} align="start" />
             {filterFlag === "advancedFilters" ? (
               <DataTableFilterList
@@ -101,6 +103,7 @@ export function TasksTable({ promises }: TasksTableProps) {
           </DataTableAdvancedToolbar>
         ) : (
           <DataTableToolbar table={table}>
+            <TasksTableToolbarActions table={table} />
             <DataTableSortList table={table} align="end" />
           </DataTableToolbar>
         )}

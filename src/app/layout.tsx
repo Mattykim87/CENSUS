@@ -2,6 +2,7 @@ import { SiteHeader } from "@/components/layouts/site-header";
 import { ThemeProvider } from "@/components/providers";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
 import { siteConfig } from "@/config/site";
+import { createSafeUrl } from "@/lib/url-utils";
 import { cn } from "@/lib/utils";
 
 import "@/styles/globals.css";
@@ -13,7 +14,8 @@ import { fontMono, fontSans } from "@/lib/fonts";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
+  // Use our utility function for safe URL creation
+  metadataBase: createSafeUrl(siteConfig.url) || new URL("https://tablecn.com"),
   title: {
     default: siteConfig.name,
     template: `%s - ${siteConfig.name}`,

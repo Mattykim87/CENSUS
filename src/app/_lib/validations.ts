@@ -61,6 +61,9 @@ export type GetTasksSchema = Awaited<
 export type CreateTaskSchema = z.infer<typeof createTaskSchema>;
 export type UpdateTaskSchema = z.infer<typeof updateTaskSchema>;
 
+// Maximum file size (10MB)
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
 // CSV upload schema
 export const csvUploadSchema = z.object({
   file: z
@@ -69,6 +72,10 @@ export const csvUploadSchema = z.object({
     .refine(
       (file) => file.type === "text/csv" || file.name.endsWith(".csv"),
       "File must be a CSV",
+    )
+    .refine(
+      (file) => file.size <= MAX_FILE_SIZE,
+      `File size must be less than 10MB`,
     ),
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
@@ -84,6 +91,10 @@ export const csvPreviewSchema = z.object({
     .refine(
       (file) => file.type === "text/csv" || file.name.endsWith(".csv"),
       "File must be a CSV",
+    )
+    .refine(
+      (file) => file.size <= MAX_FILE_SIZE,
+      `File size must be less than 10MB`,
     ),
 });
 

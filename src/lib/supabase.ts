@@ -3,15 +3,20 @@ import { type SupabaseClient, createClient } from "@supabase/supabase-js";
 // Singleton instance
 let supabaseInstance: SupabaseClient | null = null;
 
+import { createSafeUrl } from "./url-utils";
+
 // Safe environment variable access with fallbacks
 function getSupabaseConfig() {
   // Try to get from process.env first (available during build)
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const urlStr = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  // Validate the URL to make sure it's a proper URL before using
+  const isValidUrl = urlStr && createSafeUrl(urlStr) !== null;
 
   // Fallback to empty strings for build time (prevents errors)
   return {
-    url: url || "",
+    url: isValidUrl ? urlStr : "",
     anonKey: anonKey || "",
   };
 }
