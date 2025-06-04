@@ -7,6 +7,5 @@
     "NEXT_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind1dHJ5a3dzcWZ0aXdlcXdoaHRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg5NzE3NDYsImV4cCI6MjA2NDU0Nzc0Nn0.W_diRJq1ZRY1raysfEN1iephXKMSJsbu0SioYCsNnIY",
     "SKIP_ENV_VALIDATION": "1",
     "DATABASE_URL": "postgres://postgres:placeholder@db.wutrykwsqftiweqwhhtd.supabase.co:5432/postgres"
-  },
-  "installCommand": "npm install --legacy-peer-deps"
+  }
 }
