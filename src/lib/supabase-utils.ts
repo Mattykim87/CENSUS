@@ -57,12 +57,6 @@ export async function downloadFile(bucket: string, path: string) {
   return { data, error };
 }
 
-export async function listFiles(bucket: string, path: string) {
-  const supabase = getSupabase();
-  const { data, error } = await supabase.storage.from(bucket).list(path);
-  return { data, error };
-}
-
 export async function deleteFile(bucket: string, path: string) {
   const supabase = getSupabase();
   const { data, error } = await supabase.storage.from(bucket).remove([path]);
@@ -87,6 +81,7 @@ export function subscribeToChannel(
     .subscribe();
 
   return () => {
+    const supabase = getSupabase();
     supabase.removeChannel(channel);
   };
 }

@@ -12,7 +12,9 @@ export async function middleware(request: NextRequest) {
 
   // During build time or when env vars are missing, skip Supabase middleware
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.warn("Supabase environment variables not available in middleware, skipping auth checks");
+    console.warn(
+      "Supabase environment variables not available in middleware, skipping auth checks",
+    );
     return res;
   }
 
