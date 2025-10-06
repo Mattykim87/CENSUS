@@ -30,6 +30,27 @@ See the [documentation](https://diceui.com/docs/components/data-table) to get st
 - [x] Action bar on row selection
 - [x] Supabase authentication integration
 - [x] Secure database access via Supabase
+- [x] **OpenRefine-style data transformations** for CSV imports
+  - Data analysis and statistics (unique values, empty cells, data type detection)
+  - Quick transformations (trim, uppercase, lowercase, title case)
+  - Advanced transformations (find & replace, split/merge columns, fill empty cells)
+  - Real-time preview of transformed data
+  - Transformation pipeline with multiple operations
+
+## OpenRefine Features
+
+This application now includes modern OpenRefine-style data transformation capabilities. When uploading CSV files, you can:
+
+- **Analyze your data**: View statistics about each column (unique values, empty cells, data type)
+- **Clean your data**: Remove duplicates, trim whitespace, standardize capitalization
+- **Transform your data**: Split columns, merge columns, find and replace text
+- **Preview changes**: See the results before importing
+- **Build pipelines**: Apply multiple transformations in sequence
+
+For detailed documentation, see:
+- [OpenRefine Features Guide](./docs/openrefine-features.md)
+- [OpenRefine Tutorial with Examples](./docs/openrefine-tutorial.md)
+- [Sample CSV Data](./docs/sample-data.csv)
 
 ## Running Locally
 
