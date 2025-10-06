@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
+import { DataTransformationPanel } from "@/components/data-table/data-transformation-panel";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -31,12 +32,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  type Transformation,
+  applyTransformations,
+} from "@/lib/data-transformations";
 import { getErrorMessage } from "@/lib/handle-error";
 import { previewCSV } from "../_lib/actions";
 import { type CSVPreviewSchema, csvPreviewSchema } from "../_lib/validations";
 
 interface CSVPreviewSheetProps {
-  onConfirm: (file: File, headers: string[], rowCount: number) => void;
+  onConfirm: (
+    file: File,
+    headers: string[],
+    rowCount: number,
+    transformedData?: Record<string, string>[],
+  ) => void;
   children: React.ReactNode;
 }
 
@@ -49,6 +59,13 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
     rows: Record<string, string>[];
     totalRows: number;
   } | null>(null);
+  const [originalData, setOriginalData] = useState<Record<string, string>[]>(
+    [],
+  );
+  const [transformations, setTransformations] = useState<Transformation[]>([]);
+  const [transformedData, setTransformedData] = useState<
+    Record<string, string>[]
+  >([]);
 
   const form = useForm<CSVPreviewSchema>({
     resolver: zodResolver(csvPreviewSchema),
@@ -57,7 +74,7 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
 
   const processFile = (file: File | undefined) => {
     if (!file) return;
-    
+
     form.setValue("file", file);
 
     // Read the file and preview it
@@ -77,6 +94,8 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
 
             if (result.data) {
               setPreviewData(result.data);
+              setOriginalData(result.data.rows);
+              setTransformedData(result.data.rows);
             }
           } catch (err) {
             toast.error(getErrorMessage(err));
@@ -93,24 +112,24 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
       processFile(file);
     }
   };
-  
+
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(true);
   };
-  
+
   const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
   };
-  
+
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setIsDragging(false);
-    
+
     const files = e.dataTransfer.files;
     if (files.length > 0) {
       const file = files[0];
@@ -123,29 +142,62 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
     }
   };
 
+  const handleTransformationsChange = (
+    newTransformations: Transformation[],
+  ) => {
+    setTransformations(newTransformations);
+    if (originalData.length > 0) {
+      const transformed = applyTransformations(
+        originalData,
+        newTransformations,
+      );
+      setTransformedData(transformed);
+
+      // Update preview data with transformed data
+      if (previewData) {
+        const transformedHeaders = Object.keys(transformed[0] || {});
+        setPreviewData({
+          ...previewData,
+          headers: transformedHeaders,
+          rows: transformed.slice(0, 10),
+        });
+      }
+    }
+  };
+
   const handleConfirm = () => {
     const formFile = form.getValues("file");
-    
+
     // Explicit type guard to make TypeScript happy
     if (!formFile || !previewData) {
       return;
     }
-    
+
     // At this point TypeScript knows formFile is defined and is a File
-    onConfirm(formFile, previewData.headers, previewData.totalRows);
+    // Pass transformed data if transformations were applied
+    onConfirm(
+      formFile,
+      previewData.headers,
+      previewData.totalRows,
+      transformations.length > 0 ? transformedData : undefined,
+    );
     setIsOpen(false);
     form.reset();
     setPreviewData(null);
+    setOriginalData([]);
+    setTransformedData([]);
+    setTransformations([]);
   };
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent className="sm:max-w-2xl">
+      <SheetContent className="overflow-y-auto sm:max-w-[90vw] lg:max-w-[1200px]">
         <SheetHeader>
-          <SheetTitle>Preview CSV File</SheetTitle>
+          <SheetTitle>Preview & Transform CSV File</SheetTitle>
           <SheetDescription>
-            Preview the contents of your CSV file before uploading
+            Preview and apply OpenRefine-style transformations to your CSV
+            before uploading
           </SheetDescription>
         </SheetHeader>
         <div className="mt-6">
@@ -155,11 +207,13 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
               name="file"
               render={({ field: { onChange, value, ...rest } }) => (
                 <FormItem>
-                    <FormLabel>CSV File</FormLabel>
-                    <div
-                      className={`flex flex-col items-center justify-center rounded-md border-2 border-dashed p-6 transition-colors ${
-                        isDragging ? "border-primary bg-primary/5" : "border-muted-foreground/25"
-                      }`}
+                  <FormLabel>CSV File</FormLabel>
+                  <div
+                    className={`flex flex-col items-center justify-center rounded-md border-2 border-dashed p-6 transition-colors ${
+                      isDragging
+                        ? "border-primary bg-primary/5"
+                        : "border-muted-foreground/25"
+                    }`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
@@ -181,7 +235,9 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
                       </svg>
                       <p className="mb-1 font-medium">
                         Drag and drop your CSV file here, or{" "}
-                        <span className="cursor-pointer text-primary">browse</span>
+                        <span className="cursor-pointer text-primary">
+                          browse
+                        </span>
                       </p>
                       <p className="text-muted-foreground text-xs">
                         Supports CSV files up to 10MB
@@ -203,7 +259,9 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
                       type="button"
                       variant="outline"
                       className="mt-4"
-                      onClick={() => document.getElementById("csv-file-input")?.click()}
+                      onClick={() =>
+                        document.getElementById("csv-file-input")?.click()
+                      }
                       disabled={isPending}
                     >
                       Select File
@@ -216,46 +274,66 @@ export function CSVPreviewSheet({ onConfirm, children }: CSVPreviewSheetProps) {
           </Form>
 
           {previewData && (
-            <div className="mt-6">
-              <div className="mb-2 text-muted-foreground text-sm">
-                Total rows: {previewData.totalRows} (showing first 10)
-              </div>
-              <div className="max-h-[400px] overflow-auto rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      {previewData.headers.map((header) => (
-                        <TableHead key={header}>{header}</TableHead>
-                      ))}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {previewData.rows.map((row, index) => (
-                      <TableRow key={index}>
+            <div className="mt-6 space-y-6">
+              {/* Data Transformation Panel */}
+              <DataTransformationPanel
+                data={originalData}
+                headers={Object.keys(originalData[0] || {})}
+                onTransformationsChange={handleTransformationsChange}
+              />
+
+              {/* Preview Table */}
+              <div>
+                <div className="mb-2 flex items-center justify-between">
+                  <div className="text-muted-foreground text-sm">
+                    Total rows: {previewData.totalRows} (showing first 10)
+                    {transformations.length > 0 && (
+                      <span className="ml-2 text-primary">
+                        • {transformations.length} transformation(s) applied
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="max-h-[400px] overflow-auto rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
                         {previewData.headers.map((header) => (
-                          <TableCell key={`${index}-${header}`}>
-                            {row[header] || ""}
-                          </TableCell>
+                          <TableHead key={header}>{header}</TableHead>
                         ))}
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-              <div className="mt-4 flex justify-end gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setIsOpen(false);
-                    form.reset();
-                    setPreviewData(null);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button onClick={handleConfirm} disabled={isPending}>
-                  Confirm & Continue
-                </Button>
+                    </TableHeader>
+                    <TableBody>
+                      {previewData.rows.map((row, index) => (
+                        <TableRow key={index}>
+                          {previewData.headers.map((header) => (
+                            <TableCell key={`${index}-${header}`}>
+                              {row[header] || ""}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                <div className="mt-4 flex justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsOpen(false);
+                      form.reset();
+                      setPreviewData(null);
+                      setOriginalData([]);
+                      setTransformedData([]);
+                      setTransformations([]);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button onClick={handleConfirm} disabled={isPending}>
+                    Confirm & Continue
+                  </Button>
+                </div>
               </div>
             </div>
           )}

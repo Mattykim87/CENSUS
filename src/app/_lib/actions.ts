@@ -226,10 +226,12 @@ export async function uploadCSV(input: {
   filename: string;
   title: string;
   description?: string;
+  transformedData?: Record<string, string>[];
 }) {
   unstable_noStore();
   try {
-    const csvData = parseCSV(input.csvContent);
+    // Use transformed data if provided, otherwise parse the CSV content
+    const csvData = input.transformedData || parseCSV(input.csvContent);
     const headers = Object.keys(csvData[0] || {});
 
     await db.transaction(async (tx) => {

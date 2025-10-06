@@ -38,6 +38,9 @@ export function CSVUploadSheet({ children }: CSVUploadSheetProps) {
   const [isPending, startTransition] = useTransition();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [transformedData, setTransformedData] = useState<
+    Record<string, string>[] | null
+  >(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadStatus, setUploadStatus] = useState<
     "idle" | "uploading" | "processing" | "success" | "error"
@@ -83,6 +86,7 @@ export function CSVUploadSheet({ children }: CSVUploadSheetProps) {
               filename: selectedFile.name,
               title: data.title,
               description: data.description,
+              transformedData: transformedData || undefined,
             });
 
             clearInterval(progressInterval);
@@ -120,8 +124,10 @@ export function CSVUploadSheet({ children }: CSVUploadSheetProps) {
     file: File,
     _headers: string[],
     _rowCount: number,
+    transformedCSVData?: Record<string, string>[],
   ) => {
     setSelectedFile(file);
+    setTransformedData(transformedCSVData || null);
     form.setValue("file", file);
     // Optional: You could store and display the headers and rowCount information
   };
@@ -139,8 +145,13 @@ export function CSVUploadSheet({ children }: CSVUploadSheetProps) {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
                 <CSVPreviewSheet
-                  onConfirm={(file, headers, rowCount) =>
-                    handlePreviewConfirm(file, headers, rowCount)
+                  onConfirm={(file, headers, rowCount, transformedCSVData) =>
+                    handlePreviewConfirm(
+                      file,
+                      headers,
+                      rowCount,
+                      transformedCSVData,
+                    )
                   }
                 >
                   <Button type="button" variant="outline" className="w-full">
@@ -150,10 +161,17 @@ export function CSVUploadSheet({ children }: CSVUploadSheetProps) {
                   </Button>
                 </CSVPreviewSheet>
                 {selectedFile && (
-                  <p className="text-muted-foreground text-sm">
-                    {selectedFile.name} ({Math.round(selectedFile.size / 1024)}{" "}
-                    KB)
-                  </p>
+                  <div className="space-y-1">
+                    <p className="text-muted-foreground text-sm">
+                      {selectedFile.name} (
+                      {Math.round(selectedFile.size / 1024)} KB)
+                    </p>
+                    {transformedData && (
+                      <p className="text-primary text-xs">
+                        ✓ Data transformations applied
+                      </p>
+                    )}
+                  </div>
                 )}
               </div>
 

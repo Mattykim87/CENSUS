@@ -1,0 +1,11 @@
+name,email,status,priority,estimated_hours,description
+  John Doe  ,john.doe@example.com,TODO,HIGH,5,Fix login issue
+Jane Smith,jane.smith@example.com,in progress,medium,3,Update documentation
+Bob Johnson  ,bob.johnson@example.com,DONE,low,2,Add unit tests
+Alice Brown,alice.brown@example.com,todo,high,8,Implement new feature
+  John Doe  ,john.doe@example.com,TODO,HIGH,5,Fix login issue
+Charlie Wilson,charlie@example.com,,medium,4,Review pull requests
+Diana Prince,diana.prince@example.com,In Progress,LOW,6,Refactor code
+  John Doe  ,john.doe@example.com,TODO,HIGH,5,Fix login issue
+Eve Davis,eve.davis@example.com,done,MEDIUM,3,
+Frank Miller,  frank.miller@example.com  ,canceled,high,10,Migrate database
